@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('assessments', function (Blueprint $table) {
-            $table->id();
-            $table->integer('q1_1')->default(0);
-            $table->integer('q1_2')->default(0);
-            $table->integer('q2_1')->default(0);
-            $table->integer('q2_2')->default(0);
-            $table->integer('q2_3')->default(0);
-            $table->text('suggestion')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('assessments')) {
+            Schema::create('assessments', function (Blueprint $table) {
+                $table->id();
+                $table->integer('q1_1')->default(0);
+                $table->integer('q1_2')->default(0);
+                $table->integer('q2_1')->default(0);
+                $table->integer('q2_2')->default(0);
+                $table->integer('q2_3')->default(0);
+                $table->text('suggestion')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**

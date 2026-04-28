@@ -14,9 +14,8 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
-     * Disable standard timestamps since the table doesn't have updated_at
+     * Standard timestamps enabled.
      */
-    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.
