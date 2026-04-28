@@ -57,7 +57,7 @@
             <div class="mb-6">
                 <div class="flex justify-between mb-2">
                     <label for="password" class="block text-[15px] font-medium text-gray-700">รหัสผ่าน</label>
-                    <a href="#" class="text-[13px] text-[#7e059c] hover:underline font-medium">ลืมรหัสผ่าน?</a>
+                    <a href="{{ route('password.forgot') }}" class="text-[13px] text-[#7e059c] hover:underline font-medium">ลืมรหัสผ่าน?</a>
                 </div>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">

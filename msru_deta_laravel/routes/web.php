@@ -21,6 +21,11 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.su
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::post('/register/send-otp', [App\Http\Controllers\OTPController::class, 'sendOtp'])->name('register.send_otp');
 
+// Forgot Password Routes
+Route::get('/forgot-password', [App\Http\Controllers\ForgotPasswordController::class, 'showForgotForm'])->name('password.forgot');
+Route::post('/forgot-password/send-otp', [App\Http\Controllers\ForgotPasswordController::class, 'sendOtp'])->name('password.send_otp');
+Route::post('/forgot-password/reset', [App\Http\Controllers\ForgotPasswordController::class, 'resetPassword'])->name('password.reset.submit');
+
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 Route::get('/complaint', [ComplaintController::class, 'index'])->name('complaint.index');
 Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store')->middleware('throttle:5,1');
