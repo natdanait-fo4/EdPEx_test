@@ -132,33 +132,9 @@
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <i class="fa-solid fa-book text-gray-400"></i>
                     </div>
-                    <select name="major" id="major_select" required
-                        onchange="this.classList.remove('text-gray-400'); this.classList.add('text-gray-700')"
-                        class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#7e059c] focus:border-[#7e059c] outline-none transition-all text-gray-400 text-[14px] bg-white cursor-pointer">
-                        <option value="" disabled {{ old('major') ? '' : 'selected' }}>เลือกสาขาวิชา...</option>
-                        <option value="สาขาวิชาการบัญชี" {{ old('major') == 'สาขาวิชาการบัญชี' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาการบัญชี</option>
-                        <option value="สาขาวิชาการบัญชี (เทียบโอน)" {{ old('major') == 'สาขาวิชาการบัญชี (เทียบโอน)' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาการบัญชี (เทียบโอน)</option>
-                        <option value="สาขาวิชาการตลาดดิจิทัล" {{ old('major') == 'สาขาวิชาการตลาดดิจิทัล' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาการตลาดดิจิทัล</option>
-                        <option value="สาขาวิชาการตลาดดิจิทัล (เทียบโอน)" {{ old('major') == 'สาขาวิชาการตลาดดิจิทัล (เทียบโอน)' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาการตลาดดิจิทัล (เทียบโอน)
-                        </option>
-                        <option value="สาขาวิชานิเทศศาสตร์" {{ old('major') == 'สาขาวิชานิเทศศาสตร์' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชานิเทศศาสตร์</option>
-                        <option value="สาขาวิชาเศรษฐศาสตร์ การจัดการธุรกิจการค้าสมัยใหม่" {{ old('major') == 'สาขาวิชาเศรษฐศาสตร์ การจัดการธุรกิจการค้าสมัยใหม่' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาเศรษฐศาสตร์ การจัดการธุรกิจการค้าสมัยใหม่</option>
-                        <option value="สาขาวิชาคอมพิวเตอร์ธุรกิจ" {{ old('major') == 'สาขาวิชาคอมพิวเตอร์ธุรกิจ' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาคอมพิวเตอร์ธุรกิจ</option>
-                        <option value="สาขาวิชาคอมพิวเตอร์ธุรกิจ (เทียบโอน)" {{ old('major') == 'สาขาวิชาคอมพิวเตอร์ธุรกิจ (เทียบโอน)' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาคอมพิวเตอร์ธุรกิจ (เทียบโอน)
-                        </option>
-                        <option value="สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี" {{ old('major') == 'สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี</option>
-                        <option value="สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี (เทียบโอน)" {{ old('major') == 'สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี (เทียบโอน)' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี (เทียบโอน)</option>
-                        <option value="สาขาวิชาการท่องเที่ยวและการโรงแรม" {{ old('major') == 'สาขาวิชาการท่องเที่ยวและการโรงแรม' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาการท่องเที่ยวและการโรงแรม</option>
-                        <option value="สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ" {{ old('major') == 'สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ</option>
-                        <option value="สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ (เทียบโอน)" {{ old('major') == 'สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ (เทียบโอน)' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ (เทียบโอน)</option>
-                    </select>
+                    <input type="text" name="major" id="major_input" value="{{ old('major') }}" readonly required
+                        class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-xl bg-gray-100 focus:ring-0 outline-none transition-all text-gray-500 text-[14px] cursor-not-allowed"
+                        placeholder="ระบบจะเลือกให้อัตโนมัติจากรหัส">
                 </div>
             </div>
 
@@ -362,13 +338,14 @@
 
         // ฟังก์ชันเลือกสาขาอัตโนมัติตามรหัสสาขา
         function autoSelectMajor(studentId) {
+            const majorInput = document.getElementById('major_input');
+            
             if (studentId.length >= 7) {
                 // รหัสสาขาหลัก (ตำแหน่งที่ 5, 6, 7)
                 const code3 = studentId.substring(4, 7);
                 // รหัสสาขาแบบละเอียด (ตำแหน่งที่ 5, 6, 7, 8) สำหรับบางกรณี
                 const code4 = studentId.length >= 8 ? studentId.substring(4, 8) : "";
 
-                const majorSelect = document.getElementById('major_select');
                 let selectedMajor = "";
 
                 // Mapping ภาคปกติ และ ภาคเทียบโอน
@@ -404,18 +381,26 @@
                 }
 
                 if (selectedMajor !== "") {
-                    majorSelect.value = selectedMajor;
-                    majorSelect.classList.remove('text-gray-400');
-                    majorSelect.classList.add('text-gray-700');
+                    majorInput.value = selectedMajor;
+                    majorInput.classList.remove('text-gray-500', 'text-red-500');
+                    majorInput.classList.add('text-[#7e059c]', 'font-semibold');
+                } else {
+                    majorInput.value = "ไม่พบสาขาวิชาที่ตรงกับรหัสนี้";
+                    majorInput.classList.remove('text-[#7e059c]', 'font-semibold', 'text-gray-500');
+                    majorInput.classList.add('text-red-500');
                 }
+            } else {
+                majorInput.value = "";
+                majorInput.classList.remove('text-[#7e059c]', 'font-semibold', 'text-red-500');
+                majorInput.classList.add('text-gray-500');
             }
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            const select = document.getElementById('major_select');
-            if (select && select.value !== "") {
-                select.classList.remove('text-gray-400');
-                select.classList.add('text-gray-700');
+            // โหลดสาขาวิชาอัตโนมัติหากมีข้อมูลรหัสเดิมค้างอยู่ (กรณีเกิด Error แล้วเด้งกลับมา)
+            const studentInput = document.getElementById('student_id');
+            if (studentInput && studentInput.value) {
+                autoSelectMajor(studentInput.value);
             }
         });
 

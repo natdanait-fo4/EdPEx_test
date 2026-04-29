@@ -40,15 +40,15 @@
             <h3>ประเมินความพึงพอใจ</h3>
             <div style="margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 5px;">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">{{ number_format($overallScore, 1) }}</span>
+                    <span style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">{{ number_format($overallScore ?? 0, 1) }}</span>
                     <div style="color: var(--yellow-color); font-size: 0.9rem; display: flex; gap: 2px;">
                         @for($i=1; $i<=5; $i++)
-                            <i class="fa-{{ $i <= round($overallScore) ? 'solid' : 'regular' }} fa-star"></i>
+                            <i class="fa-{{ $i <= round($overallScore ?? 0) ? 'solid' : 'regular' }} fa-star"></i>
                         @endfor
                     </div>
                 </div>
                 <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 500;">
-                    <i class="fa-solid fa-users opacity-70"></i> อ้างอิงจากผู้ประเมิน {{ $totalUsers }} คน
+                    <i class="fa-solid fa-users opacity-70"></i> อ้างอิงจากผู้ประเมิน {{ $totalUsers ?? 0 }} คน
                 </div>
             </div>
             <p>ให้คะแนนการบริการและหลักสูตรเพื่อการพัฒนา</p>
@@ -96,17 +96,17 @@
 
         @if($banners->count() > 1)
             <!-- Navigation Buttons -->
-            <button onclick="moveBanner(-1)" style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #7e059c; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,1)'" onmouseout="this.style.background='rgba(255,255,255,0.8)'">
+            <button aria-label="รูปภาพแบนเนอร์ก่อนหน้า" onclick="moveBanner(-1)" style="position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #7e059c; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,1)'" onmouseout="this.style.background='rgba(255,255,255,0.8)'">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
-            <button onclick="moveBanner(1)" style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #7e059c; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,1)'" onmouseout="this.style.background='rgba(255,255,255,0.8)'">
+            <button aria-label="รูปภาพแบนเนอร์ถัดไป" onclick="moveBanner(1)" style="position: absolute; top: 50%; right: 15px; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #7e059c; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,1)'" onmouseout="this.style.background='rgba(255,255,255,0.8)'">
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
             
             <!-- Indicators -->
             <div style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10;">
                 @foreach($banners as $index => $banner)
-                    <button onclick="goToBanner({{ $index }})" class="banner-dot" data-index="{{ $index }}" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: {{ $index == 0 ? '#7e059c' : 'rgba(255,255,255,0.8)' }}; cursor: pointer; transition: 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></button>
+                    <button aria-label="เลื่อนไปยังแบนเนอร์ที่ {{ $index + 1 }}" onclick="goToBanner({{ $index }})" class="banner-dot" data-index="{{ $index }}" style="width: 10px; height: 10px; border-radius: 50%; border: none; background: {{ $index == 0 ? '#7e059c' : 'rgba(255,255,255,0.8)' }}; cursor: pointer; transition: 0.3s; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"></button>
                 @endforeach
             </div>
         @endif
@@ -182,10 +182,10 @@
         <span class="close-lightbox" onclick="closeBannerLightbox()">&times;</span>
         
         @if($banners->count() > 1)
-        <button class="lightbox-nav-btn prev" onclick="changeLightboxBanner(-1)">
+        <button class="lightbox-nav-btn prev" aria-label="รูปภาพแบนเนอร์ก่อนหน้า" onclick="changeLightboxBanner(-1)">
             <i class="fa-solid fa-chevron-left"></i>
         </button>
-        <button class="lightbox-nav-btn next" onclick="changeLightboxBanner(1)">
+        <button class="lightbox-nav-btn next" aria-label="รูปภาพแบนเนอร์ถัดไป" onclick="changeLightboxBanner(1)">
             <i class="fa-solid fa-chevron-right"></i>
         </button>
         @endif

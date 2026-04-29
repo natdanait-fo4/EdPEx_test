@@ -20,7 +20,7 @@ class AssessmentController extends Controller
             $overallScore = round($allAnswers->avg('score'), 1);
         }
         
-        $questions = AssessmentQuestion::orderBy('order')->get();
+        $questions = AssessmentQuestion::withAvg('answers', 'score')->orderBy('order')->get();
         $groupedQuestions = $questions->groupBy('category');
         
         return view('assessment.index', compact('totalUsers', 'overallScore', 'groupedQuestions'));
@@ -34,7 +34,8 @@ class AssessmentController extends Controller
         ]);
 
         $response = AssessmentResponse::create([
-            'suggestion' => $request->input('suggestion')
+            'suggestion' => $request->input('suggestion'),
+            'ip_address' => $request->ip()
         ]);
 
         foreach ($request->input('answers') as $questionId => $score) {

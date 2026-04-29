@@ -67,7 +67,14 @@
             <div class="rating-box">
                 @foreach($questions as $question)
                 <div class="rating-row">
-                    <div class="rating-text">{{ $loop->iteration }}. {{ $question->question_text }}</div>
+                    <div class="rating-text">
+                        {{ $loop->iteration }}. {{ $question->question_text }}
+                        @if($question->answers_avg_score > 0)
+                            <span style="font-size: 0.85rem; color: var(--yellow-color); margin-left: 10px; font-weight: bold;" title="คะแนนเฉลี่ยปัจจุบัน">
+                                <i class="fa-solid fa-star"></i> {{ number_format($question->answers_avg_score, 1) }}
+                            </span>
+                        @endif
+                    </div>
                     <div class="rating-stars" data-input="answers_{{ $question->id }}">
                         <i class="fa-regular fa-star"></i>
                         <i class="fa-regular fa-star"></i>

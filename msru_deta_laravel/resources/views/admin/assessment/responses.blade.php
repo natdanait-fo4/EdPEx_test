@@ -32,7 +32,7 @@
         <table class="w-full text-left border-collapse min-w-[800px] border border-gray-200 dark:border-gray-700">
             <thead>
                 <tr class="bg-purple-50 dark:bg-purple-900/30 border-b border-purple-100 dark:border-purple-800 text-[#7e059c] dark:text-purple-300 text-[10px] uppercase tracking-wider font-bold">
-                    <th class="px-4 py-2 text-center border-r border-purple-100 dark:border-purple-800" colspan="2">ข้อมูลการส่ง</th>
+                    <th class="px-4 py-2 text-center border-r border-purple-100 dark:border-purple-800" colspan="3">ข้อมูลการส่ง</th>
                     @foreach($questions->groupBy('category') as $category => $categoryQuestions)
                     <th class="px-2 py-2 text-center border-r border-purple-100 dark:border-purple-800" colspan="{{ $categoryQuestions->count() }}">
                         <i class="fa-solid fa-folder-open mr-1 text-[12px]"></i> {{ $category ?: 'ทั่วไป' }}
@@ -41,8 +41,9 @@
                     <th class="px-4 py-2 text-center" colspan="2">เพิ่มเติม</th>
                 </tr>
                 <tr class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 text-[10px] uppercase">
-                    <th class="px-4 py-3 font-medium text-center border-r border-gray-200 dark:border-gray-700" width="60">ลำดับ</th>
+                    <th class="px-4 py-3 font-medium text-center border-r border-gray-200 dark:border-gray-700" width="60">ID</th>
                     <th class="px-4 py-3 font-medium border-r border-gray-200 dark:border-gray-700">วันที่ส่ง</th>
+                    <th class="px-4 py-3 font-medium border-r border-gray-200 dark:border-gray-700">IP Address</th>
                     
                     @php $qIndex = 1; @endphp
                     @foreach($questions->groupBy('category') as $category => $categoryQuestions)
@@ -60,8 +61,9 @@
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700 italic-score">
                 @foreach($responses as $response)
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors text-sm">
-                    <td class="px-4 py-4 text-center text-gray-400 dark:text-gray-500 border-r border-gray-200 dark:border-gray-700">{{ $loop->iteration }}</td>
+                    <td class="px-4 py-4 text-center text-gray-400 dark:text-gray-500 border-r border-gray-200 dark:border-gray-700 font-medium">#{{ $response->id }}</td>
                     <td class="px-4 py-4 text-gray-600 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700 whitespace-nowrap">{{ $response->created_at->format('d/m/Y H:i') }}</td>
+                    <td class="px-4 py-4 text-gray-500 dark:text-gray-400 border-r border-gray-200 dark:border-gray-700 font-mono text-xs">{{ $response->ip_address ?: '-' }}</td>
                     
                     @php 
                         $answerMap = $response->answers->pluck('score', 'question_id')->toArray();
@@ -90,7 +92,7 @@
                 
                 @if(count($responses) == 0)
                 <tr>
-                    <td colspan="{{ count($questions) + 4 }}" class="px-6 py-12 text-center text-gray-500">
+                    <td colspan="{{ count($questions) + 5 }}" class="px-6 py-12 text-center text-gray-500">
                         <div class="flex flex-col items-center">
                             <i class="fa-solid fa-inbox text-4xl mb-2 text-gray-200"></i>
                             <p>ยังไม่มีผู้ส่งข้อมูลการประเมิน</p>

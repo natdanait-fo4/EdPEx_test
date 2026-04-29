@@ -38,6 +38,12 @@ Route::get('/qa', [QAController::class, 'index'])->name('qa.index');
 Route::post('/qa', [QAController::class, 'store'])->name('qa.store')->middleware('throttle:5,1');
 Route::post('/qa/{id}/destroy', [QAController::class, 'destroy'])->name('qa.user_destroy');
 
+// User Profile Routes
+Route::middleware(['auth'])->prefix('profile')->name('profile.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\UserProfileController::class, 'edit'])->name('edit');
+    Route::post('/update', [\App\Http\Controllers\UserProfileController::class, 'update'])->name('update');
+});
+
 // Admin Primary Routes
 Route::name('admin.')->prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');

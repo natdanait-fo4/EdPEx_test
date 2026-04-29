@@ -70,7 +70,7 @@ class AuthController extends Controller
             'otp_code' => ['required', 'string', 'size:6'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'fullname' => ['required', 'string', 'max:255'],
-            'student_id' => ['required', 'string', 'size:11'],
+            'student_id' => ['required', 'string', 'size:11', 'unique:users,student_id'],
             'major' => ['nullable', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:20'],
             'address' => ['nullable', 'string'],
@@ -85,6 +85,7 @@ class AuthController extends Controller
             'fullname.required' => 'กรุณากรอกชื่อ-นามสกุล',
             'student_id.required' => 'กรุณากรอกรหัสนักศึกษา',
             'student_id.size' => 'รหัสนักศึกษาต้องมี 11 หลัก',
+            'student_id.unique' => 'รหัสนักศึกษานี้ถูกใช้ลงทะเบียนไปแล้ว',
         ]);
 
         // Check OTP from Session

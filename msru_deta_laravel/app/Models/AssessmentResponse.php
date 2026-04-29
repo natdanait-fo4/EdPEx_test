@@ -8,6 +8,7 @@ class AssessmentResponse extends Model
 {
     protected $fillable = [
         'suggestion',
+        'ip_address',
     ];
 
     public function answers()
