@@ -69,9 +69,9 @@
                 <i class="fa-solid fa-moon text-lg" id="theme-icon"></i>
             </button>
             <div class="h-8 w-[1px] bg-white/20 mx-2"></div>
-            <div class="flex items-center text-white/90 text-sm font-medium pr-2">
-                <i class="fa-solid fa-user-shield mr-2 text-lg"></i>
-                <span class="hidden md:inline">{{ auth()->user()->username }}</span>
+            <div class="flex items-center text-white text-sm font-medium pr-2">
+                <i class="fa-solid fa-user-shield mr-2 text-lg text-white"></i>
+                <span class="hidden md:inline text-white">{{ auth()->user()->username }}</span>
             </div>
             <a href="{{ route('logout') }}" class="nav-btn text-sm font-medium border border-transparent hover:border-white/30 px-3 py-1.5 rounded-lg">
                 <i class="fa-solid fa-arrow-right-from-bracket mr-2"></i> ออกจากระบบ

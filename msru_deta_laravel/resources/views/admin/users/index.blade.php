@@ -4,28 +4,31 @@
 @section('header_title', 'จัดการบัญชีผู้ใช้งานระบบ')
 
 @section('content')
-<div class="admin-table-wrapper">
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h2 class="text-xl font-bold text-gray-800 dark:text-white">รายชื่อผู้ใช้งานทั้งหมด</h2>
-            <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">กำหนดสิทธิ์ แอดมิน หรือ ผู้ใช้ทั่วไป</p>
-        </div>
-        <button onclick="openAddModal()" class="bg-[#7e059c] hover:bg-[#680482] text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center">
-            <i class="fa-solid fa-plus mr-2"></i> เพิ่มผู้ใช้งาน
-        </button>
-    </div>
+<div class="admin-container">
+    <div class="admin-table-wrapper">
+        <div class="p-6 border-b border-gray-100 dark:border-gray-700">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800 dark:text-white">รายชื่อผู้ใช้งานทั้งหมด</h2>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">กำหนดสิทธิ์ แอดมิน หรือ ผู้ใช้ทั่วไป</p>
+                </div>
+                <button onclick="openAddModal()" class="bg-[#7e059c] hover:bg-[#680482] text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center">
+                    <i class="fa-solid fa-plus mr-2"></i> เพิ่มผู้ใช้งาน
+                </button>
+            </div>
 
-    <div class="flex flex-wrap gap-2 mb-6">
-        <a href="{{ route('admin.users.index') }}" class="px-4 py-2 rounded-full text-xs font-medium border {{ !request('role') ? 'bg-[#7e059c] text-white border-[#7e059c]' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50' }}">
-            ทั้งหมด
-        </a>
-        <a href="{{ route('admin.users.index', ['role' => 'admin']) }}" class="px-4 py-2 rounded-full text-xs font-medium border {{ request('role') === 'admin' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50' }}">
-            ผู้ดูแลระบบ (Admin)
-        </a>
-        <a href="{{ route('admin.users.index', ['role' => 'user']) }}" class="px-4 py-2 rounded-full text-xs font-medium border {{ request('role') === 'user' ? 'bg-gray-600 text-white border-gray-600' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50' }}">
-            ผู้ใช้ทั่วไป (User)
-        </a>
-    </div>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ route('admin.users.index') }}" class="px-4 py-2 rounded-full text-xs font-medium border {{ !request('role') ? 'bg-[#7e059c] text-white border-[#7e059c]' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50' }}">
+                    ทั้งหมด
+                </a>
+                <a href="{{ route('admin.users.index', ['role' => 'admin']) }}" class="px-4 py-2 rounded-full text-xs font-medium border {{ request('role') === 'admin' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50' }}">
+                    ผู้ดูแลระบบ (Admin)
+                </a>
+                <a href="{{ route('admin.users.index', ['role' => 'user']) }}" class="px-4 py-2 rounded-full text-xs font-medium border {{ request('role') === 'user' ? 'bg-gray-600 text-white border-gray-600' : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50' }}">
+                    ผู้ใช้ทั่วไป (User)
+                </a>
+            </div>
+        </div>
 
 
     
@@ -64,12 +67,24 @@
                         @endif
                     </td>
                     <td class="admin-table-td">
-                        <div class="text-sm text-gray-900 dark:text-white">{{ $user->fullname ?? '-' }}</div>
-                        <div class="text-xs text-gray-500">{{ $user->phone ?? '' }}</div>
+                        @if(empty($user->fullname) && empty($user->phone))
+                            <div class="text-sm text-gray-400">-</div>
+                        @else
+                            <div class="text-sm text-gray-900 dark:text-white">{{ $user->fullname ?: '-' }}</div>
+                            @if(!empty($user->phone))
+                                <div class="text-xs text-gray-500">{{ $user->phone }}</div>
+                            @endif
+                        @endif
                     </td>
                     <td class="admin-table-td">
-                        <div class="text-sm text-gray-900 dark:text-white">{{ $user->student_id ?? '-' }}</div>
-                        <div class="text-[11px] text-gray-500">{{ $user->major ?? '-' }}</div>
+                        @if(empty($user->student_id) && empty($user->major))
+                            <div class="text-sm text-gray-400">-</div>
+                        @else
+                            <div class="text-sm text-gray-900 dark:text-white">{{ $user->student_id ?: '-' }}</div>
+                            @if(!empty($user->major))
+                                <div class="text-[11px] text-gray-500">{{ $user->major }}</div>
+                            @endif
+                        @endif
                     </td>
                     <td class="admin-table-td">
                         @if($user->role === 'admin')
@@ -316,4 +331,5 @@
         if (event.key === 'Escape') closeModals();
     });
 </script>
+</div>
 @endsection

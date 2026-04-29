@@ -64,7 +64,12 @@
         </table>
     </div>
 </div>
-               <!-- Add Question Modal -->
+
+@php
+    $categories = $questions->pluck('category')->filter()->unique()->values();
+@endphp
+
+<!-- Add Question Modal -->
 <div id="addModal" class="modal-overlay hidden">
     <div class="modal-content">
         <div class="modal-header">
@@ -77,7 +82,27 @@
             @csrf
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">หมวดหมู่ (ถ้ามี)</label>
-                <input type="text" name="category" class="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white" placeholder="เช่น ส่วนที่ 1: การบริการ">
+                
+                <div id="add_select_mode">
+                    <select id="add_category_select" onchange="handleAddCategoryChange(this)" class="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        <option value="">ไม่มีหมวดหมู่</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat }}">{{ $cat }}</option>
+                        @endforeach
+                        <option value="__NEW__" class="font-bold text-[#7e059c] bg-purple-50 dark:bg-purple-900/30">
+                            + เพิ่มหมวดหมู่ใหม่...
+                        </option>
+                    </select>
+                </div>
+
+                <div id="add_input_mode" class="hidden relative">
+                    <input type="text" id="add_category_input" placeholder="พิมพ์ชื่อหมวดหมู่ใหม่..." class="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white pr-10">
+                    <button type="button" onclick="cancelAddCategoryNew()" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-full transition-colors" title="ยกเลิกการพิมพ์หมวดหมู่ใหม่">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                
+                <input type="hidden" name="category" id="add_category_final" value="">
             </div>
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ข้อความคำถาม *</label>
@@ -108,7 +133,27 @@
             @csrf
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">หมวดหมู่ (ถ้ามี)</label>
-                <input type="text" name="category" id="edit_category" class="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                
+                <div id="edit_select_mode">
+                    <select id="edit_category_select" onchange="handleEditCategoryChange(this)" class="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        <option value="">ไม่มีหมวดหมู่</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat }}">{{ $cat }}</option>
+                        @endforeach
+                        <option value="__NEW__" class="font-bold text-[#7e059c] bg-purple-50 dark:bg-purple-900/30">
+                            + เพิ่มหมวดหมู่ใหม่...
+                        </option>
+                    </select>
+                </div>
+
+                <div id="edit_input_mode" class="hidden relative">
+                    <input type="text" id="edit_category_input" placeholder="พิมพ์ชื่อหมวดหมู่ใหม่..." class="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white pr-10">
+                    <button type="button" onclick="cancelEditCategoryNew()" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 w-8 h-8 flex items-center justify-center rounded-full transition-colors" title="ยกเลิกการพิมพ์หมวดหมู่ใหม่">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                
+                <input type="hidden" name="category" id="edit_category_final" value="">
             </div>
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ข้อความคำถาม *</label>
@@ -148,7 +193,30 @@
     }
 
     function openEditModal(question) {
-        document.getElementById('edit_category').value = question.category || '';
+        const cat = question.category || '';
+        document.getElementById('edit_category_final').value = cat;
+        
+        const select = document.getElementById('edit_category_select');
+        document.getElementById('edit_input_mode').classList.add('hidden');
+        document.getElementById('edit_select_mode').classList.remove('hidden');
+        document.getElementById('edit_category_input').value = '';
+        
+        let exists = false;
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].value === cat && cat !== '__NEW__') {
+                exists = true; break;
+            }
+        }
+        
+        if (exists || cat === '') {
+            select.value = cat;
+        } else {
+            document.getElementById('edit_select_mode').classList.add('hidden');
+            document.getElementById('edit_input_mode').classList.remove('hidden');
+            document.getElementById('edit_category_input').value = cat;
+            select.value = '__NEW__';
+        }
+
         document.getElementById('edit_question_text').value = question.question_text;
         document.getElementById('edit_order').value = question.order;
         
@@ -168,6 +236,58 @@
         document.getElementById('addModal').classList.add('hidden');
         document.getElementById('editModal').classList.add('hidden');
         document.getElementById('deleteModal').classList.add('hidden');
+        
+        // Reset modes
+        cancelAddCategoryNew();
+        cancelEditCategoryNew();
     }
+
+    // Add Modal Handlers
+    function handleAddCategoryChange(select) {
+        if (select.value === '__NEW__') {
+            document.getElementById('add_select_mode').classList.add('hidden');
+            document.getElementById('add_input_mode').classList.remove('hidden');
+            document.getElementById('add_category_input').focus();
+            document.getElementById('add_category_final').value = '';
+        } else {
+            document.getElementById('add_category_final').value = select.value;
+        }
+    }
+
+    function cancelAddCategoryNew() {
+        document.getElementById('add_input_mode').classList.add('hidden');
+        document.getElementById('add_select_mode').classList.remove('hidden');
+        document.getElementById('add_category_select').value = '';
+        document.getElementById('add_category_final').value = '';
+        document.getElementById('add_category_input').value = '';
+    }
+
+    document.getElementById('add_category_input').addEventListener('input', function(e) {
+        document.getElementById('add_category_final').value = e.target.value;
+    });
+
+    // Edit Modal Handlers
+    function handleEditCategoryChange(select) {
+        if (select.value === '__NEW__') {
+            document.getElementById('edit_select_mode').classList.add('hidden');
+            document.getElementById('edit_input_mode').classList.remove('hidden');
+            document.getElementById('edit_category_input').focus();
+            document.getElementById('edit_category_final').value = '';
+        } else {
+            document.getElementById('edit_category_final').value = select.value;
+        }
+    }
+
+    function cancelEditCategoryNew() {
+        document.getElementById('edit_input_mode').classList.add('hidden');
+        document.getElementById('edit_select_mode').classList.remove('hidden');
+        document.getElementById('edit_category_select').value = '';
+        document.getElementById('edit_category_final').value = '';
+        document.getElementById('edit_category_input').value = '';
+    }
+
+    document.getElementById('edit_category_input').addEventListener('input', function(e) {
+        document.getElementById('edit_category_final').value = e.target.value;
+    });
 </script>
 @endsection
