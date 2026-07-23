@@ -7,14 +7,7 @@
 
 @section('content')
 <div class="admin-container">
-    @if(session('success'))
-        <div class="mb-6 bg-green-100 dark:bg-green-900/40 border-l-4 border-green-500 text-green-700 dark:text-green-300 p-4 rounded shadow-sm" role="alert">
-            <div class="flex items-center">
-                <i class="fa-solid fa-circle-check mr-2"></i>
-                <p class="font-bold">สำเร็จ! {{ session('success') }}</p>
-            </div>
-        </div>
-    @endif
+
 
     <!-- Dashboard Widgets -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -77,7 +70,7 @@
                         @foreach($complaints as $complaint)
                         <tr class="admin-table-tr">
                             <td class="admin-table-td">
-                                <div class="text-sm font-medium text-gray-900 dark:text-white">#{{ $complaint->id }}</div>
+                                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $complaint->id }}</div>
                                 <div class="text-[10px] text-gray-400 dark:text-gray-500 uppercase">{{ $complaint->created_at->format('d M Y | H:i') }}</div>
                             </td>
                             <td class="admin-table-td">
@@ -97,9 +90,14 @@
                                 @endif
                             </td>
                             <td class="admin-table-td text-center">
-                                <button onclick="openEditModal({!! htmlspecialchars(json_encode($complaint->load('user'))) !!})" class="btn-reply">
-                                    <i class="fa-solid fa-comment-dots mr-1.5"></i> ตอบกลับ
-                                </button>
+                                <div class="flex justify-center items-center space-x-2">
+                                    <button onclick="openEditModal({!! htmlspecialchars(json_encode($complaint->load('user'))) !!})" class="btn-reply">
+                                        <i class="fa-solid fa-comment-dots mr-1.5"></i> ตอบกลับ
+                                    </button>
+                                    <button onclick="openDeleteComplaintModal({{ $complaint->id }})" class="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 px-3 py-1.5 rounded-lg transition-colors text-sm font-medium flex items-center" title="ลบ">
+                                        <i class="fa-regular fa-trash-can mr-1.5"></i> ลบ
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
@@ -129,7 +127,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all border border-gray-200 dark:border-gray-700 animate-in zoom-in duration-200">
         <div class="bg-[#7e059c] text-white px-8 py-5 flex justify-between items-center">
             <div>
-                <h3 class="text-xl font-bold">จัดการข้อร้องเรียน #<span id="modal_id"></span></h3>
+                <h3 class="text-xl font-bold">จัดการข้อร้องเรียน รหัส <span id="modal_id"></span></h3>
                 <p class="text-purple-100 text-xs mt-0.5">ส่วนการดำเนินงานของเจ้าหน้าที่</p>
             </div>
             <button onclick="closeModal()" class="text-white/80 hover:text-white transition-colors bg-white/10 p-2 rounded-full"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -178,6 +176,23 @@
     </div>
 </div>
 
+<!-- Delete Modal -->
+<div id="deleteComplaintModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-gray-200 dark:border-gray-700 p-6 text-center">
+        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-triangle-exclamation text-3xl text-red-500"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">ยืนยันการลบข้อร้องเรียน?</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-6 font-medium text-sm">ข้อร้องเรียนนี้จะถูกลบออกจากระบบอย่างถาวร<br>การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+        
+        <form id="deleteComplaintForm" method="POST" class="flex justify-center space-x-3">
+            @csrf
+            <button type="button" onclick="closeDeleteComplaintModal()" class="w-full px-4 py-2 text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-lg font-medium transition-colors">ยกเลิก</button>
+            <button type="submit" class="w-full px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors shadow-sm">ยืนยันลบ</button>
+        </form>
+    </div>
+</div>
+
 <script>
     function openEditModal(complaint) {
         document.getElementById('modal_id').innerText = complaint.id;
@@ -197,7 +212,7 @@
         if(complaint.file_path) {
             modalFile.innerHTML = `
                 <div class="text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-widest">หลักฐานประกอบ / ไฟล์แนบ</div>
-                <a href="/${complaint.file_path}" target="_blank" class="inline-flex items-center px-4 py-2 bg-purple-50 dark:bg-purple-900/20 text-[#7e059c] dark:text-purple-300 rounded-lg hover:bg-purple-100 transition-colors text-xs font-bold border border-purple-100 dark:border-purple-900/30">
+                <a href="{{ asset('storage') }}/${complaint.file_path}" target="_blank" class="inline-flex items-center px-4 py-2 bg-purple-50 dark:bg-purple-900/20 text-[#7e059c] dark:text-purple-300 rounded-lg hover:bg-purple-100 transition-colors text-xs font-bold border border-purple-100 dark:border-purple-900/30">
                     <i class="fa-solid fa-paperclip mr-2 text-sm"></i> เปิดดูไฟล์แนบ
                 </a>
             `;
@@ -215,9 +230,24 @@
         document.getElementById('editModal').classList.add('hidden');
     }
 
+    function openDeleteComplaintModal(id) {
+        let form = document.getElementById('deleteComplaintForm');
+        form.action = "{{ route('admin.complaints.destroy', 'REPLACE_ID') }}".replace('REPLACE_ID', id);
+        document.getElementById('deleteComplaintModal').classList.remove('hidden');
+        document.getElementById('deleteComplaintModal').classList.add('flex');
+    }
+
+    function closeDeleteComplaintModal() {
+        document.getElementById('deleteComplaintModal').classList.add('hidden');
+        document.getElementById('deleteComplaintModal').classList.remove('flex');
+    }
+
     // Close on Escape
     document.addEventListener('keydown', function(e) {
-        if(e.key === 'Escape') closeModal();
+        if(e.key === 'Escape') {
+            closeModal();
+            closeDeleteComplaintModal();
+        }
     });
 </script>
 @endsection

@@ -6,32 +6,28 @@
 @section('content')
 <div class="admin-card">
 
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
         <div>
             <h2 class="text-xl font-bold text-gray-800 dark:text-white">หัวข้อคำถามทั้งหมด</h2>
             <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">แอดมินสามารถเพิ่ม ลบ หรือแก้ไขหัวข้อคำถามที่จะแสดงในหน้าประเมินได้ที่นี่</p>
         </div>
-        <div class="flex space-x-2">
-            <a href="{{ route('admin.assessment.responses') }}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium transition-colors border border-gray-300 dark:border-gray-600 flex items-center">
+        <div class="flex flex-col sm:flex-row gap-2">
+            <a href="{{ route('admin.assessment.responses') }}" class="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-lg font-medium transition-colors border border-gray-300 dark:border-gray-600 flex items-center justify-center whitespace-nowrap w-full sm:w-auto">
                 <i class="fa-solid fa-list-check mr-2"></i> ดูผลการประเมิน
             </a>
-            <button onclick="openAddModal()" class="bg-[#7e059c] hover:bg-[#680482] text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center">
+            <button onclick="openAddModal()" class="bg-[#7e059c] hover:bg-[#680482] text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center justify-center whitespace-nowrap w-full sm:w-auto">
                 <i class="fa-solid fa-plus mr-2"></i> เพิ่มหัวข้อใหม่
             </button>
         </div>
     </div>
 
-    @if(session('success'))
-        <div class="mb-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg flex items-center">
-            <i class="fa-solid fa-circle-check mr-2"></i> {{ session('success') }}
-        </div>
-    @endif
 
-    <div class="admin-table-wrapper">
+
+    <div class="admin-table-wrapper overflow-x-auto">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="admin-table-thead-tr">
-                    <th class="admin-table-th" width="100">ลำดับ</th>
+
                     <th class="admin-table-th" width="250">หมวดหมู่</th>
                     <th class="admin-table-th">ข้อความคำถาม</th>
                     <th class="admin-table-th text-right">จัดการ</th>
@@ -40,13 +36,22 @@
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                 @foreach($questions->groupBy('category') as $category => $categoryQuestions)
                 <tr class="bg-gray-50/50 dark:bg-gray-700/30">
-                    <td colspan="4" class="px-6 py-2 font-bold text-[#7e059c] dark:text-purple-400 border-y border-gray-100 dark:border-gray-700 text-sm">
-                        <i class="fa-solid fa-folder-open mr-2"></i> {{ $category ?: 'ยังไม่มีหมวดหมู่' }}
+                    <td colspan="3" class="px-6 py-2 font-bold text-[#7e059c] dark:text-purple-400 border-y border-gray-100 dark:border-gray-700 text-sm">
+                        <div class="flex justify-between items-center">
+                            <span>
+                                <i class="fa-solid fa-folder-open mr-2"></i> {{ $category ?: 'ยังไม่มีหมวดหมู่' }}
+                            </span>
+                            @if($category)
+                            <button onclick="openEditCategoryModal('{{ $category }}')" class="text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 px-2 py-1 rounded transition-colors text-xs flex items-center gap-1 font-semibold">
+                                <i class="fa-regular fa-pen-to-square"></i> แก้ไขชื่อส่วนนี้
+                            </button>
+                            @endif
+                        </div>
                     </td>
                 </tr>
                 @foreach($categoryQuestions as $question)
                 <tr class="admin-table-tr">
-                    <td class="admin-table-td pl-10 text-gray-600 dark:text-gray-400">{{ $question->order }}</td>
+
                     <td class="admin-table-td font-medium text-gray-400 dark:text-gray-500 text-xs">{{ $question->category ?: '-' }}</td>
                     <td class="admin-table-td text-gray-700 dark:text-gray-300">{{ $question->question_text }}</td>
                     <td class="admin-table-td text-right space-x-2">
@@ -108,10 +113,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ข้อความคำถาม *</label>
                 <textarea name="question_text" required rows="3" class="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white" placeholder="เช่น ความรวดเร็วในการให้บริการ"></textarea>
             </div>
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ลำดับการแสดงผล</label>
-                <input type="number" name="order" value="{{ ($questions->max('order') ?? 0) + 1 }}" class="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-            </div>
+
             <div class="flex justify-end space-x-3">
                 <button type="button" onclick="closeModals()" class="px-4 py-2 text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-lg">ยกเลิก</button>
                 <button type="submit" class="px-4 py-2 text-white bg-[#7e059c] hover:bg-[#680482] rounded-lg">บันทึก</button>
@@ -159,10 +161,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ข้อความคำถาม *</label>
                 <textarea name="question_text" id="edit_question_text" required rows="3" class="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white"></textarea>
             </div>
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ลำดับการแสดงผล</label>
-                <input type="number" name="order" id="edit_order" class="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
-            </div>
+
             <div class="flex justify-end space-x-3">
                 <button type="button" onclick="closeModals()" class="px-4 py-2 text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-lg">ยกเลิก</button>
                 <button type="submit" class="px-4 py-2 text-white bg-[#7e059c] hover:bg-[#680482] rounded-lg">บันทึกการแก้ไข</button>
@@ -183,6 +182,31 @@
             @csrf
             <button type="button" onclick="closeModals()" class="w-full px-4 py-2 text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-lg">ยกเลิก</button>
             <button type="submit" class="w-full px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg">ยืนยันลบ</button>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div id="editCategoryModal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <div class="flex justify-between items-center px-6 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-white">แก้ไขชื่อส่วน (หมวดหมู่)</h3>
+            <button onclick="closeModals()" class="text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+        </div>
+        <form action="{{ route('admin.assessment.category.update') }}" method="POST" class="p-6">
+            @csrf
+            <input type="hidden" name="old_category" id="edit_old_category" value="">
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ชื่อส่วนใหม่ *</label>
+                <input type="text" name="new_category" id="edit_new_category" required class="w-full px-4 py-2 border dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                <p class="text-gray-400 text-xs mt-1">ข้อคำถามทั้งหมดที่อยู่ในชื่อส่วนเดิมจะถูกย้ายมายังชื่อส่วนใหม่นี้โดยอัตโนมัติ</p>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button type="button" onclick="closeModals()" class="px-4 py-2 text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-lg">ยกเลิก</button>
+                <button type="submit" class="px-4 py-2 text-white bg-[#7e059c] hover:bg-[#680482] rounded-lg">บันทึกการแก้ไข</button>
+            </div>
         </form>
     </div>
 </div>
@@ -218,7 +242,7 @@
         }
 
         document.getElementById('edit_question_text').value = question.question_text;
-        document.getElementById('edit_order').value = question.order;
+
         
         let form = document.getElementById('editForm');
         form.action = "{{ route('admin.assessment.question.update', 'REPLACE_ID') }}".replace('REPLACE_ID', question.id);
@@ -232,10 +256,17 @@
         document.getElementById('deleteModal').classList.remove('hidden');
     }
 
+    function openEditCategoryModal(category) {
+        document.getElementById('edit_old_category').value = category;
+        document.getElementById('edit_new_category').value = category;
+        document.getElementById('editCategoryModal').classList.remove('hidden');
+    }
+
     function closeModals() {
         document.getElementById('addModal').classList.add('hidden');
         document.getElementById('editModal').classList.add('hidden');
         document.getElementById('deleteModal').classList.add('hidden');
+        document.getElementById('editCategoryModal').classList.add('hidden');
         
         // Reset modes
         cancelAddCategoryNew();
@@ -289,5 +320,7 @@
     document.getElementById('edit_category_input').addEventListener('input', function(e) {
         document.getElementById('edit_category_final').value = e.target.value;
     });
+
+
 </script>
 @endsection

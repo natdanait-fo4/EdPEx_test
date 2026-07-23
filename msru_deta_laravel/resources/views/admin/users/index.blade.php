@@ -7,12 +7,12 @@
 <div class="admin-container">
     <div class="admin-table-wrapper">
         <div class="p-6 border-b border-gray-100 dark:border-gray-700">
-            <div class="flex justify-between items-center mb-6">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
                 <div>
                     <h2 class="text-xl font-bold text-gray-800 dark:text-white">รายชื่อผู้ใช้งานทั้งหมด</h2>
                     <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">กำหนดสิทธิ์ แอดมิน หรือ ผู้ใช้ทั่วไป</p>
                 </div>
-                <button onclick="openAddModal()" class="bg-[#7e059c] hover:bg-[#680482] text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center">
+                <button onclick="openAddModal()" class="bg-[#7e059c] hover:bg-[#680482] text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center justify-center whitespace-nowrap w-full sm:w-auto">
                     <i class="fa-solid fa-plus mr-2"></i> เพิ่มผู้ใช้งาน
                 </button>
             </div>
@@ -59,7 +59,7 @@
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                 @foreach($users as $user)
                 <tr class="admin-table-tr">
-                    <td class="admin-table-td text-gray-500 dark:text-gray-400">#{{ $user->id }}</td>
+                    <td class="admin-table-td text-gray-500 dark:text-gray-400">{{ $user->id }}</td>
                     <td class="admin-table-td font-medium text-gray-800 dark:text-gray-200">
                         {{ $user->username }}
                         @if($user->id === auth()->id())

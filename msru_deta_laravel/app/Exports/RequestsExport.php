@@ -23,7 +23,8 @@ class RequestsExport implements FromCollection, WithHeadings, WithTitle, WithMap
             'ผู้แจ้ง',
             'หมวดหมู่',
             'รายละเอียด',
-            'สถานะ'
+            'สถานะ',
+            'การตอบกลับ'
         ];
     }
 
@@ -37,10 +38,11 @@ class RequestsExport implements FromCollection, WithHeadings, WithTitle, WithMap
         return [
             $request->id,
             $request->created_at->format('Y-m-d H:i:s'),
-            $request->user->name ?? 'ไม่ระบุตัวตน',
+            $request->user->username ?? 'ไม่ระบุตัวตน',
             $request->category,
             $request->details,
-            $request->status
+            $request->status,
+            $request->reply ?? '-'
         ];
     }
 }

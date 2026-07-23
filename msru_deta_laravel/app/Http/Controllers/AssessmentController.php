@@ -20,21 +20,33 @@ class AssessmentController extends Controller
             $overallScore = round($allAnswers->avg('score'), 1);
         }
         
-        $questions = AssessmentQuestion::orderBy('order')->get();
+        $questions = AssessmentQuestion::withAvg('answers', 'score')->get();
+        
+        $questions = AssessmentQuestion::sortQuestions($questions);
+
         $groupedQuestions = $questions->groupBy('category');
         
         return view('assessment.index', compact('totalUsers', 'overallScore', 'groupedQuestions'));
     }
 
-    public function store(Request $request)
+    public function store(\App\Http\Requests\StoreAssessmentRequest $request)
     {
-        $request->validate([
-            'answers' => 'required|array',
-            'suggestion' => 'nullable|string'
-        ]);
+
+        $suggestionsArray = $request->input('suggestions', []);
+        $formattedSuggestions = [];
+        foreach ($suggestionsArray as $secIndex => $text) {
+            $trimmed = trim($text);
+            if (!empty($trimmed)) {
+                $formattedSuggestions[] = "ส่วนที่ {$secIndex}: {$trimmed}";
+            }
+        }
+        $fullSuggestion = implode("\n", $formattedSuggestions);
 
         $response = AssessmentResponse::create([
-            'suggestion' => $request->input('suggestion')
+            'suggestion' => $fullSuggestion ?: null,
+            'ip_address' => $request->ip(),
+            'major' => $request->input('major'),
+            'user_id' => auth()->check() ? auth()->id() : null,
         ]);
 
         foreach ($request->input('answers') as $questionId => $score) {
@@ -50,6 +62,17 @@ class AssessmentController extends Controller
         EdPExService::updateExport();
         
         session()->put('has_assessed', true);
+        if (auth()->check()) {
+            auth()->user()->update(['has_assessed' => true]);
+        }
+        
+        if ($request->has('from_logout') || $request->input('from_logout')) {
+            \Illuminate\Support\Facades\Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return view('auth.exit');
+        }
+        
         return redirect()->back()->with('success', 'ขอบคุณที่ร่วมแสดงความคิดเห็นครับ');
     }
 }

@@ -5,11 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>สมัครสมาชิกใหม่ | NSRU-MS DETA SHIP</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Prompt Font & Font Awesome -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-4 py-12">
@@ -132,33 +135,9 @@
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <i class="fa-solid fa-book text-gray-400"></i>
                     </div>
-                    <select name="major" id="major_select" required
-                        onchange="this.classList.remove('text-gray-400'); this.classList.add('text-gray-700')"
-                        class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-[#7e059c] focus:border-[#7e059c] outline-none transition-all text-gray-400 text-[14px] bg-white cursor-pointer">
-                        <option value="" disabled {{ old('major') ? '' : 'selected' }}>เลือกสาขาวิชา...</option>
-                        <option value="สาขาวิชาการบัญชี" {{ old('major') == 'สาขาวิชาการบัญชี' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาการบัญชี</option>
-                        <option value="สาขาวิชาการบัญชี (เทียบโอน)" {{ old('major') == 'สาขาวิชาการบัญชี (เทียบโอน)' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาการบัญชี (เทียบโอน)</option>
-                        <option value="สาขาวิชาการตลาดดิจิทัล" {{ old('major') == 'สาขาวิชาการตลาดดิจิทัล' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาการตลาดดิจิทัล</option>
-                        <option value="สาขาวิชาการตลาดดิจิทัล (เทียบโอน)" {{ old('major') == 'สาขาวิชาการตลาดดิจิทัล (เทียบโอน)' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาการตลาดดิจิทัล (เทียบโอน)
-                        </option>
-                        <option value="สาขาวิชานิเทศศาสตร์" {{ old('major') == 'สาขาวิชานิเทศศาสตร์' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชานิเทศศาสตร์</option>
-                        <option value="สาขาวิชาเศรษฐศาสตร์ การจัดการธุรกิจการค้าสมัยใหม่" {{ old('major') == 'สาขาวิชาเศรษฐศาสตร์ การจัดการธุรกิจการค้าสมัยใหม่' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาเศรษฐศาสตร์ การจัดการธุรกิจการค้าสมัยใหม่</option>
-                        <option value="สาขาวิชาคอมพิวเตอร์ธุรกิจ" {{ old('major') == 'สาขาวิชาคอมพิวเตอร์ธุรกิจ' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาคอมพิวเตอร์ธุรกิจ</option>
-                        <option value="สาขาวิชาคอมพิวเตอร์ธุรกิจ (เทียบโอน)" {{ old('major') == 'สาขาวิชาคอมพิวเตอร์ธุรกิจ (เทียบโอน)' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาคอมพิวเตอร์ธุรกิจ (เทียบโอน)
-                        </option>
-                        <option value="สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี" {{ old('major') == 'สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี</option>
-                        <option value="สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี (เทียบโอน)" {{ old('major') == 'สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี (เทียบโอน)' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาธุรกิจดิจิทัลและเทคโนโลยี (เทียบโอน)</option>
-                        <option value="สาขาวิชาการท่องเที่ยวและการโรงแรม" {{ old('major') == 'สาขาวิชาการท่องเที่ยวและการโรงแรม' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาการท่องเที่ยวและการโรงแรม</option>
-                        <option value="สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ" {{ old('major') == 'สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ' ? 'selected' : '' }}
-                            class="text-gray-700">สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ</option>
-                        <option value="สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ (เทียบโอน)" {{ old('major') == 'สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ (เทียบโอน)' ? 'selected' : '' }} class="text-gray-700">สาขาวิชาการจัดการธุรกิจทรัพยากรมนุษย์และองค์การ (เทียบโอน)</option>
-                    </select>
+                    <input type="text" name="major" id="major_input" value="{{ old('major') }}" readonly required
+                        class="w-full pl-11 pr-4 py-2.5 border border-gray-300 rounded-xl bg-gray-100 focus:ring-0 outline-none transition-all text-gray-500 text-[14px] cursor-not-allowed"
+                        placeholder="ระบบจะเลือกให้อัตโนมัติจากรหัส">
                 </div>
             </div>
 
@@ -189,14 +168,16 @@
             <div id="otp_section" class="hidden animate-fade-in">
                 <label class="block text-[14px] font-medium text-gray-700 mb-1.5">รหัสยืนยัน OTP (6 หลัก) <span
                         class="text-red-500">*</span></label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <i class="fa-solid fa-shield-check text-purple-400"></i>
-                    </div>
-                    <input type="text" name="otp_code" id="otp_code" maxlength="6"
-                        class="w-full pl-11 pr-4 py-2.5 border-2 border-purple-100 rounded-xl focus:ring-2 focus:ring-[#7e059c] focus:border-[#7e059c] outline-none transition-all text-center tracking-[0.5em] font-bold text-gray-800 text-[18px]"
-                        placeholder="000000">
+                <!-- ช่องกรอกแบบแยกหลัก 6 ช่อง -->
+                <div class="flex justify-between items-center gap-2 mt-2 mb-3" id="otp-input-wrapper">
+                    <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+                    <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+                    <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+                    <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+                    <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+                    <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
                 </div>
+                <input type="hidden" name="otp_code" id="otp_code">
                 <p class="text-[11px] text-purple-600 mt-1"><i class="fa-solid fa-circle-info mr-1"></i>
                     รหัสถูกส่งไปที่อีเมลของคุณแล้ว</p>
             </div>
@@ -362,13 +343,14 @@
 
         // ฟังก์ชันเลือกสาขาอัตโนมัติตามรหัสสาขา
         function autoSelectMajor(studentId) {
+            const majorInput = document.getElementById('major_input');
+            
             if (studentId.length >= 7) {
                 // รหัสสาขาหลัก (ตำแหน่งที่ 5, 6, 7)
                 const code3 = studentId.substring(4, 7);
                 // รหัสสาขาแบบละเอียด (ตำแหน่งที่ 5, 6, 7, 8) สำหรับบางกรณี
                 const code4 = studentId.length >= 8 ? studentId.substring(4, 8) : "";
 
-                const majorSelect = document.getElementById('major_select');
                 let selectedMajor = "";
 
                 // Mapping ภาคปกติ และ ภาคเทียบโอน
@@ -404,18 +386,26 @@
                 }
 
                 if (selectedMajor !== "") {
-                    majorSelect.value = selectedMajor;
-                    majorSelect.classList.remove('text-gray-400');
-                    majorSelect.classList.add('text-gray-700');
+                    majorInput.value = selectedMajor;
+                    majorInput.classList.remove('text-gray-500', 'text-red-500');
+                    majorInput.classList.add('text-[#7e059c]', 'font-semibold');
+                } else {
+                    majorInput.value = "ไม่พบสาขาวิชาที่ตรงกับรหัสนี้";
+                    majorInput.classList.remove('text-[#7e059c]', 'font-semibold', 'text-gray-500');
+                    majorInput.classList.add('text-red-500');
                 }
+            } else {
+                majorInput.value = "";
+                majorInput.classList.remove('text-[#7e059c]', 'font-semibold', 'text-red-500');
+                majorInput.classList.add('text-gray-500');
             }
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            const select = document.getElementById('major_select');
-            if (select && select.value !== "") {
-                select.classList.remove('text-gray-400');
-                select.classList.add('text-gray-700');
+            // โหลดสาขาวิชาอัตโนมัติหากมีข้อมูลรหัสเดิมค้างอยู่ (กรณีเกิด Error แล้วเด้งกลับมา)
+            const studentInput = document.getElementById('student_id');
+            if (studentInput && studentInput.value) {
+                autoSelectMajor(studentInput.value);
             }
         });
 
@@ -427,7 +417,7 @@
             const otpSection = document.getElementById('otp_section');
 
             if (!email || !email.endsWith('@nsru.ac.th')) {
-                alert('กรุณากรอกอีเมลนักศึกษา @nsru.ac.th ให้ถูกต้อง');
+                Swal.fire({ icon: 'warning', title: 'ข้อผิดพลาด', text: 'กรุณากรอกอีเมลนักศึกษา @nsru.ac.th ให้ถูกต้อง', confirmButtonColor: '#7e059c' });
                 return;
             }
 
@@ -448,7 +438,7 @@
                 .then(data => {
                     if (data.message && !data.errors) {
                         // Show Success
-                        alert(data.message);
+                        Swal.fire({ icon: 'success', title: 'สำเร็จ', text: data.message, confirmButtonColor: '#7e059c' });
                         otpSection.classList.remove('hidden');
 
                         // Start Timer
@@ -468,18 +458,127 @@
                             }
                         }, 1000);
                     } else {
-                        alert(data.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+                        Swal.fire({ icon: 'error', title: 'ข้อผิดพลาด', text: data.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง', confirmButtonColor: '#7e059c' });
                         btn.disabled = false;
                         btn.innerHTML = 'ส่งรหัส OTP';
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                    Swal.fire({ icon: 'error', title: 'ข้อผิดพลาด', text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ', confirmButtonColor: '#7e059c' });
                     btn.disabled = false;
                     btn.innerHTML = 'ส่งรหัส OTP';
                 });
         }
+
+        // จัดการช่องกรอก OTP แบบแยก 6 กล่อง
+        document.addEventListener('DOMContentLoaded', function() {
+            const wrapper = document.getElementById('otp-input-wrapper');
+            if (!wrapper) return;
+            
+            const boxes = wrapper.querySelectorAll('.otp-box');
+            const hiddenInput = document.getElementById('otp_code');
+            
+            if (boxes.length === 0 || !hiddenInput) return;
+            
+            function updateHiddenInput() {
+                let code = '';
+                boxes.forEach(box => {
+                    code += box.value;
+                });
+                hiddenInput.value = code;
+            }
+            
+            boxes.forEach((box, index) => {
+                // พิมพ์ตัวเลขแล้วเลื่อนไปกล่องถัดไป
+                box.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    if (this.value.length === 1 && index < boxes.length - 1) {
+                        boxes[index + 1].focus();
+                    }
+                    updateHiddenInput();
+                });
+                
+                // การกดลบถอยหลัง หรือปุ่มลูกศรเลื่อนซ้ายขวา
+                box.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace') {
+                        if (this.value.length === 0 && index > 0) {
+                            boxes[index - 1].value = '';
+                            boxes[index - 1].focus();
+                        } else {
+                            this.value = '';
+                        }
+                        updateHiddenInput();
+                        e.preventDefault();
+                    } else if (e.key === 'ArrowLeft' && index > 0) {
+                        boxes[index - 1].focus();
+                    } else if (e.key === 'ArrowRight' && index < boxes.length - 1) {
+                        boxes[index + 1].focus();
+                    }
+                });
+                
+                // รองรับการก๊อปปี้รหัส 6 หลักมาวางทีเดียว
+                box.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+                    const numbersOnly = pastedData.replace(/[^0-9]/g, '').substring(0, 6);
+                    
+                    for (let i = 0; i < numbersOnly.length; i++) {
+                        if (boxes[i]) {
+                            boxes[i].value = numbersOnly[i];
+                        }
+                    }
+                    
+                    const focusIndex = Math.min(numbersOnly.length, boxes.length - 1);
+                    if (boxes[focusIndex]) {
+                        boxes[focusIndex].focus();
+                    }
+                    updateHiddenInput();
+                });
+            });
+        });
+
+        // ระบบบันทึกข้อมูลแบบร่าง (Auto-save Draft) ป้องกันข้อมูลหายตอนกด F5
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            if (!form) return;
+            
+            const inputs = form.querySelectorAll('input:not([type="password"]):not([type="hidden"]):not([type="checkbox"])');
+            const textarea = form.querySelector('textarea');
+            
+            // Restore and Save Input fields
+            inputs.forEach(input => {
+                if (input.name) {
+                    // กู้คืนข้อมูลถ้ามี (และถ้าช่องนั้นยังว่างอยู่ หรือไม่มีค่าเก่าจาก old())
+                    if (!input.value && sessionStorage.getItem('reg_draft_' + input.name)) {
+                        input.value = sessionStorage.getItem('reg_draft_' + input.name);
+                    }
+                    // บันทึกข้อมูลเมื่อมีการพิมพ์
+                    input.addEventListener('input', function() {
+                        sessionStorage.setItem('reg_draft_' + this.name, this.value);
+                    });
+                }
+            });
+
+            // Restore and Save Textarea (Address)
+            if (textarea && textarea.name) {
+                if (!textarea.value && sessionStorage.getItem('reg_draft_' + textarea.name)) {
+                    textarea.value = sessionStorage.getItem('reg_draft_' + textarea.name);
+                }
+                textarea.addEventListener('input', function() {
+                    sessionStorage.setItem('reg_draft_' + this.name, this.value);
+                });
+            }
+
+            // ถ้ามีการกู้คืนรหัสนักศึกษา ให้เลือกสาขาวิชาอัตโนมัติด้วย
+            const studentInput = document.getElementById('student_id');
+            if (studentInput && studentInput.value) {
+                autoSelectMajor(studentInput.value);
+            }
+            
+            // เคลียร์ข้อมูลทิ้งเมื่อกดสมัครสมาชิกสำเร็จ (ให้เคลียร์หลังจาก validate ผ่าน ถ้าส่งฟอร์มไปแล้วผ่านจริงๆ เราจะเคลียร์ตอนโหลดหน้าอื่นแทน แต่ SessionStorage จะหายไปเองเมื่อปิดแท็บ)
+        });
     </script>
 </body>
 

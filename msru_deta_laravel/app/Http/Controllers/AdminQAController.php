@@ -71,7 +71,18 @@ class AdminQAController extends Controller
             'answer' => $request->answer,
             'status' => 'answered'
         ]);
-        return redirect()->route('admin.qa.index')->with('success', 'บันทึกคำตอบเรียบร้อยแล้ว');
+
+        // ส่งอีเมลถ้าผู้ใช้ติ๊กเลือกแจ้งเตือนไว้ และผู้ใช้มีอีเมลในระบบ
+        if ($question->notify_email && $question->user && $question->user->email) {
+            try {
+                \Illuminate\Support\Facades\Mail::to($question->user->email)->send(new \App\Mail\QuestionAnsweredMail($question));
+            } catch (\Exception $e) {
+                // Log ความผิดพลาดไว้เพื่อไม่ให้กระทบการทำงานหลักของแอดมินเมื่อส่งเมลไม่สำเร็จ
+                \Illuminate\Support\Facades\Log::error("ระบบอีเมลแจ้งตอบคำถามขัดข้อง: " . $e->getMessage());
+            }
+        }
+
+        return redirect()->route('admin.qa.index')->with('success', 'บันทึกคำตอบและส่งอีเมลแจ้งเตือนเรียบร้อยแล้ว');
     }
 
     public function destroyQuestion(Request $request)

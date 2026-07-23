@@ -34,6 +34,7 @@ class QAController extends Controller
             'details' => $request->details,
             'status' => 'waiting',
             'privacy' => $request->privacy ?? 'public',
+            'notify_email' => $request->has('notify_email') ? 1 : 0,
         ]);
 
         EdPExService::updateExport();

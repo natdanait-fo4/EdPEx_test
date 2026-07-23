@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>กู้คืนรหัสผ่าน | NSRU-MS DETA SHIP</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Prompt Font & Font Awesome -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
@@ -72,14 +75,16 @@
                 <!-- OTP Code -->
                 <div>
                     <label class="block text-[14px] font-medium text-gray-700 mb-1.5">รหัสยืนยัน OTP (6 หลัก) <span class="text-red-500">*</span></label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i class="fa-solid fa-shield-check text-purple-400"></i>
-                        </div>
-                        <input type="text" name="otp_code" id="otp_code" maxlength="6" value="{{ old('otp_code') }}" {{ old('otp_code') ? 'required' : '' }}
-                            class="w-full pl-11 pr-4 py-2.5 border-2 border-purple-100 rounded-xl focus:ring-2 focus:ring-[#7e059c] focus:border-[#7e059c] outline-none transition-all text-center tracking-[0.5em] font-bold text-gray-800 text-[18px]"
-                            placeholder="000000">
+                    <!-- ช่องกรอกแบบแยกหลัก 6 ช่อง -->
+                    <div class="flex justify-between items-center gap-2 mt-2 mb-3" id="otp-input-wrapper">
+                        <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+                        <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+                        <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+                        <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+                        <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
+                        <input type="text" maxlength="1" pattern="[0-9]*" inputmode="numeric" class="otp-box w-12 h-14 text-center text-xl font-bold border-2 border-purple-100 rounded-xl focus:border-[#7e059c] focus:ring-2 focus:ring-purple-200 outline-none transition-all bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
                     </div>
+                    <input type="hidden" name="otp_code" id="otp_code" value="{{ old('otp_code') }}">
                     <p class="text-[11px] text-purple-600 mt-1"><i class="fa-solid fa-circle-info mr-1"></i> รหัสผ่านชั่วคราวถูกส่งไปที่อีเมลของคุณแล้ว (มีอายุ 5 นาที)</p>
                 </div>
 
@@ -159,7 +164,7 @@
             const passwordInputs = resetSection.querySelectorAll('input');
 
             if (!email || !email.endsWith('@nsru.ac.th')) {
-                alert('กรุณากรอกอีเมลนักศึกษา @nsru.ac.th ให้ถูกต้อง');
+                Swal.fire({ icon: 'warning', title: 'ข้อผิดพลาด', text: 'กรุณากรอกอีเมลนักศึกษา @nsru.ac.th ให้ถูกต้อง', confirmButtonColor: '#7e059c' });
                 return;
             }
 
@@ -180,7 +185,7 @@
             .then(res => {
                 if (res.status === 200) {
                     // Show Success
-                    alert(res.body.message);
+                    Swal.fire({ icon: 'success', title: 'สำเร็จ', text: res.body.message, confirmButtonColor: '#7e059c' });
                     resetSection.classList.remove('hidden');
                     
                     // Set required for inputs
@@ -203,18 +208,86 @@
                         }
                     }, 1000);
                 } else {
-                    alert(res.body.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+                    Swal.fire({ icon: 'error', title: 'ข้อผิดพลาด', text: res.body.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง', confirmButtonColor: '#7e059c' });
                     btn.disabled = false;
                     btn.innerHTML = 'ส่งรหัส OTP';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+                Swal.fire({ icon: 'error', title: 'ข้อผิดพลาด', text: 'เกิดข้อผิดพลาดในการเชื่อมต่อ', confirmButtonColor: '#7e059c' });
                 btn.disabled = false;
                 btn.innerHTML = 'ส่งรหัส OTP';
             });
         }
+
+        // จัดการช่องกรอก OTP แบบแยก 6 กล่อง
+        document.addEventListener('DOMContentLoaded', function() {
+            const wrapper = document.getElementById('otp-input-wrapper');
+            if (!wrapper) return;
+            
+            const boxes = wrapper.querySelectorAll('.otp-box');
+            const hiddenInput = document.getElementById('otp_code');
+            
+            if (boxes.length === 0 || !hiddenInput) return;
+            
+            function updateHiddenInput() {
+                let code = '';
+                boxes.forEach(box => {
+                    code += box.value;
+                });
+                hiddenInput.value = code;
+            }
+            
+            boxes.forEach((box, index) => {
+                // พิมพ์ตัวเลขแล้วเลื่อนไปกล่องถัดไป
+                box.addEventListener('input', function(e) {
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    
+                    if (this.value.length === 1 && index < boxes.length - 1) {
+                        boxes[index + 1].focus();
+                    }
+                    updateHiddenInput();
+                });
+                
+                // การกดลบถอยหลัง หรือปุ่มลูกศรเลื่อนซ้ายขวา
+                box.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace') {
+                        if (this.value.length === 0 && index > 0) {
+                            boxes[index - 1].value = '';
+                            boxes[index - 1].focus();
+                        } else {
+                            this.value = '';
+                        }
+                        updateHiddenInput();
+                        e.preventDefault();
+                    } else if (e.key === 'ArrowLeft' && index > 0) {
+                        boxes[index - 1].focus();
+                    } else if (e.key === 'ArrowRight' && index < boxes.length - 1) {
+                        boxes[index + 1].focus();
+                    }
+                });
+                
+                // รองรับการก๊อปปี้รหัส 6 หลักมาวางทีเดียว
+                box.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedData = (e.clipboardData || window.clipboardData).getData('text');
+                    const numbersOnly = pastedData.replace(/[^0-9]/g, '').substring(0, 6);
+                    
+                    for (let i = 0; i < numbersOnly.length; i++) {
+                        if (boxes[i]) {
+                            boxes[i].value = numbersOnly[i];
+                        }
+                    }
+                    
+                    const focusIndex = Math.min(numbersOnly.length, boxes.length - 1);
+                    if (boxes[focusIndex]) {
+                        boxes[focusIndex].focus();
+                    }
+                    updateHiddenInput();
+                });
+            });
+        });
     </script>
 </body>
 </html>
