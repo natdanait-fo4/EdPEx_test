@@ -32,7 +32,7 @@ class User extends Authenticatable
         'major',
         'phone',
         'address',
-        'avatar',
+        'has_assessed',
     ];
 
     /**
@@ -55,6 +55,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'has_assessed' => 'boolean',
         ];
     }
 }

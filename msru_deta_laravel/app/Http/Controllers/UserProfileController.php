@@ -22,26 +22,11 @@ class UserProfileController extends Controller
             'fullname' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB Max
         ], [
             'fullname.required' => 'กรุณากรอกชื่อ-นามสกุล',
-            'avatar.image' => 'ไฟล์ที่อัปโหลดต้องเป็นรูปภาพเท่านั้น',
-            'avatar.mimes' => 'รองรับเฉพาะไฟล์ jpeg, png, jpg, gif เท่านั้น',
-            'avatar.max' => 'ขนาดไฟล์รูปภาพต้องไม่เกิน 5MB',
         ]);
 
         $data = $request->only(['fullname', 'phone', 'address']);
-
-        if ($request->hasFile('avatar')) {
-            // Delete old avatar if exists
-            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                Storage::disk('public')->delete($user->avatar);
-            }
-
-            // Store new avatar
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $data['avatar'] = $path;
-        }
 
         $user->update($data);
 

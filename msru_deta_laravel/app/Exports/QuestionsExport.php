@@ -24,7 +24,8 @@ class QuestionsExport implements FromCollection, WithHeadings, WithTitle, WithMa
             'หัวข้อ',
             'รายละเอียด',
             'สถานะ',
-            'ความเป็นส่วนตัว'
+            'ความเป็นส่วนตัว',
+            'การตอบกลับ'
         ];
     }
 
@@ -38,11 +39,12 @@ class QuestionsExport implements FromCollection, WithHeadings, WithTitle, WithMa
         return [
             $question->id,
             $question->created_at->format('Y-m-d H:i:s'),
-            $question->user->name ?? 'ไม่ระบุตัวตน',
+            $question->user->username ?? 'ไม่ระบุตัวตน',
             $question->title,
             $question->details,
             $question->status,
-            $question->privacy
+            $question->privacy,
+            $question->answer ?? '-'
         ];
     }
 }

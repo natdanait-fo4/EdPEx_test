@@ -10,10 +10,6 @@ class ComplaintController extends Controller
 {
     public function index()
     {
-        if (request('login') != '1' && !auth()->check()) {
-            return redirect(url('/?login=1'));
-        }
-        
         $complaints = auth()->check() 
             ? Complaint::where('user_id', auth()->id())->orderBy('created_at', 'desc')->get() 
             : collect();
@@ -21,13 +17,8 @@ class ComplaintController extends Controller
         return view('complaint.index', compact('complaints'));
     }
 
-    public function store(Request $request)
+    public function store(\App\Http\Requests\StoreComplaintRequest $request)
     {
-        $request->validate([
-            'topic' => 'required|string|max:255',
-            'description' => 'required|string',
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-        ]);
 
         $filePath = null;
         if ($request->hasFile('file')) {

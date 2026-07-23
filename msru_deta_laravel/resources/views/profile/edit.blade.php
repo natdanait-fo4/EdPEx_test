@@ -44,33 +44,10 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        position: relative;
-    }
-    .profile-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
     }
     .profile-avatar i {
         font-size: 60px;
         color: #ccc;
-    }
-    .avatar-overlay {
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.6);
-        color: white;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: 0.3s;
-        cursor: pointer;
-        font-size: 14px;
-    }
-    .profile-avatar-wrapper:hover .avatar-overlay {
-        opacity: 1;
     }
     .profile-form {
         padding: 0 40px 40px 40px;
@@ -180,14 +157,95 @@
     .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
     .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     .alert ul { margin: 0; padding-left: 20px; }
+    /* Dark Mode overrides */
+    html.dark .profile-container {
+        background-color: var(--card-bg);
+    }
+    html.dark .profile-avatar-wrapper {
+        background-color: var(--card-bg);
+    }
+    html.dark .profile-avatar {
+        background-color: #4a5568;
+    }
+    html.dark .profile-avatar i {
+        color: #a0aec0;
+    }
+    html.dark .form-section {
+        background-color: #374151 !important;
+        border-color: var(--border-color) !important;
+    }
+    html.dark .form-section .section-title {
+        color: #d8b4e2 !important;
+        border-bottom-color: var(--border-color) !important;
+    }
+    html.dark .form-group label {
+        color: var(--text-main);
+    }
+    html.dark .btn-cancel {
+        background-color: var(--card-bg);
+        color: var(--text-main);
+        border-color: var(--border-color);
+    }
+    html.dark .btn-cancel:hover {
+        background-color: #4a5568;
+    }
+    
+    @media (max-width: 600px) {
+        .edit-profile-wrapper {
+            padding: 10px !important;
+        }
+        .profile-container {
+            margin: 15px auto;
+        }
+        .profile-form {
+            padding: 0 15px 25px 15px;
+        }
+        .form-section {
+            min-width: 100%;
+            padding: 15px;
+        }
+        .profile-header {
+            height: 120px;
+        }
+        .profile-avatar-wrapper {
+            width: 110px;
+            height: 110px;
+            margin: -55px auto 20px auto;
+        }
+        .profile-avatar i {
+            font-size: 50px;
+        }
+        .profile-title {
+            font-size: 20px;
+            top: 20px;
+            left: 20px;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-<div class="container" style="padding: 20px;">
+@php
+    // ชุดสี Gradient สวยงาม 8 แบบ
+    $gradients = [
+        'linear-gradient(135deg, #7e059c 0%, #d53369 100%)', // ม่วง-ชมพู (ต้นฉบับ)
+        'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', // น้ำเงิน-ม่วง (Indigo-Violet)
+        'linear-gradient(135deg, #f43f5e 0%, #f97316 100%)', // กุหลาบ-ส้ม (Rose-Orange)
+        'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)', // เขียวมรกต-ฟ้า (Emerald-Cyan)
+        'linear-gradient(135deg, #0284c7 0%, #3b82f6 100%)', // ท้องฟ้า-น้ำเงิน (Sky-Blue)
+        'linear-gradient(135deg, #ea580c 0%, #e11d48 100%)', // ส้ม-แดงสว่าง (Orange-Rose)
+        'linear-gradient(135deg, #2563eb 0%, #7c3aed 100%)', // น้ำเงินเข้ม-ม่วง (Blue-Violet)
+        'linear-gradient(135deg, #0d9488 0%, #0284c7 100%)', // เขียวหัวเป็ด-ฟ้า (Teal-Sky)
+    ];
+
+    // คำนวณหาลำดับจาก ID ผู้ใช้ (ถ้าไม่ได้ล็อกอิน จะให้ใช้สีลำดับ 0 แทน)
+    $userIndex = auth()->check() ? (auth()->id() % count($gradients)) : 0;
+    $selectedGradient = $gradients[$userIndex];
+@endphp
+<div class="container edit-profile-wrapper" style="padding: 20px;">
     <div class="profile-container">
         <!-- Header / Cover -->
-        <div class="profile-header">
+        <div class="profile-header" style="background: {{ $selectedGradient }};">
             <div class="profile-title"><i class="fa-solid fa-user-pen"></i> แก้ไขโปรไฟล์ส่วนตัว</div>
         </div>
 
@@ -197,20 +255,8 @@
             <!-- Avatar Section -->
             <div class="profile-avatar-wrapper">
                 <div class="profile-avatar">
-                    @if($user->avatar)
-                        <img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar" id="avatarPreview">
-                    @else
-                        <i class="fa-solid fa-user" id="avatarIcon"></i>
-                        <img src="" alt="Avatar" id="avatarPreview" style="display: none;">
-                    @endif
-                    
-                    <!-- Overlay Upload -->
-                    <label for="avatar" class="avatar-overlay">
-                        <i class="fa-solid fa-camera" style="font-size: 24px; color: white; margin-bottom: 5px;"></i>
-                        <span>เปลี่ยนรูป</span>
-                    </label>
+                    <i class="fa-solid fa-user" style="font-size: 60px; color: #ccc;"></i>
                 </div>
-                <input type="file" name="avatar" id="avatar" style="display: none;" accept="image/*" onchange="previewImage(this)">
             </div>
 
             @if(session('success'))
@@ -232,7 +278,7 @@
             <div class="form-grid">
                 <!-- ข้อมูลที่แก้ไขไม่ได้ -->
                 <div class="form-section">
-                    <div class="section-title"><i class="fa-solid fa-lock"></i> ข้อมูลบัญชี (ไม่สามารถแก้ไขได้)</div>
+                    <div class="section-title"><i class="fa-solid fa-lock"></i> ข้อมูลบัญชี <span class="whitespace-nowrap">(ไม่สามารถแก้ไขได้)</span></div>
                     
                     <div class="form-group">
                         <label>อีเมลนักศึกษา</label>
@@ -251,8 +297,8 @@
                 </div>
 
                 <!-- ข้อมูลที่แก้ไขได้ -->
-                <div class="form-section" style="background: #fff; border-color: #ddd;">
-                    <div class="section-title" style="color: #333;"><i class="fa-solid fa-pen-to-square"></i> ข้อมูลที่สามารถแก้ไขได้</div>
+                <div class="form-section">
+                    <div class="section-title"><i class="fa-solid fa-pen-to-square"></i> ข้อมูลที่สามารถแก้ไขได้</div>
                     
                     <div class="form-group">
                         <label for="fullname">ชื่อ-นามสกุล <span style="color: red;">*</span></label>
@@ -272,33 +318,14 @@
             </div>
 
             <div class="action-buttons">
-                <a href="{{ url('/') }}" class="btn-cancel">ยกเลิก</a>
+                <a href="{{ route('home.index') }}" class="btn-cancel">ยกเลิก</a>
                 <button type="submit" class="btn-submit">
-                    <i class="fa-solid fa-save"></i> บันทึกการเปลี่ยนแปลง
+                    <i class="fa-solid fa-save"></i> บันทึก
                 </button>
             </div>
         </form>
     </div>
 </div>
 
-@push('scripts')
-<script>
-    function previewImage(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            
-            reader.onload = function(e) {
-                var preview = document.getElementById('avatarPreview');
-                var icon = document.getElementById('avatarIcon');
-                
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-                if(icon) icon.style.display = 'none';
-            }
-            
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-</script>
-@endpush
+
 @endsection

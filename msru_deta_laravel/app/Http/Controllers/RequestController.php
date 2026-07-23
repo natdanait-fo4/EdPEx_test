@@ -11,10 +11,6 @@ class RequestController extends Controller
 {
     public function index()
     {
-        if (request('login') != '1' && !auth()->check()) {
-            return redirect(url('/?login=1'));
-        }
-        
         $history = UserRequest::where('user_id', Auth::id())
             ->latest()
             ->get();
@@ -22,12 +18,8 @@ class RequestController extends Controller
         return view('request.index', compact('history'));
     }
 
-    public function store(Request $request)
+    public function store(\App\Http\Requests\StoreUserRequest $request)
     {
-        $request->validate([
-            'category' => 'required|string',
-            'details' => 'required|string',
-        ]);
 
         UserRequest::create([
             'user_id' => Auth::id(),

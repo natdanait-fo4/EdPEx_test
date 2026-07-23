@@ -7,20 +7,12 @@
 
 @section('content')
 <div class="admin-container">
-    @if(session('success'))
-        <div class="mb-6 bg-green-100 dark:bg-green-900/40 border-l-4 border-green-500 text-green-700 dark:text-green-300 p-4 rounded shadow-sm" role="alert">
-            <div class="flex items-center">
-                <i class="fa-solid fa-circle-check mr-2"></i>
-                <p class="font-bold">สำเร็จ! {{ session('success') }}</p>
-            </div>
-        </div>
-    @endif
 
     <!-- Dashboard Widgets -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="stat-card">
             <div class="stat-icon bg-red-100 text-red-600">
-                <i class="fa-solid fa-clock-rotate-left"></i>
+                <i class="fa-solid fa-circle-exclamation"></i>
             </div>
             <div>
                 <p class="stat-label">รอดำเนินการ</p>
@@ -29,7 +21,7 @@
         </div>
         <div class="stat-card">
             <div class="stat-icon bg-yellow-100 text-yellow-600">
-                <i class="fa-solid fa-spinner"></i>
+                <i class="fa-solid fa-clock"></i>
             </div>
             <div>
                 <p class="stat-label">กำลังดำเนินการ</p>
@@ -38,7 +30,7 @@
         </div>
         <div class="stat-card">
             <div class="stat-icon bg-green-100 text-green-600">
-                <i class="fa-solid fa-check-double"></i>
+                <i class="fa-solid fa-circle-check"></i>
             </div>
             <div>
                 <p class="stat-label">เสร็จสิ้น</p>
@@ -76,7 +68,7 @@
                     @forelse($requests as $req)
                     <tr class="admin-table-tr">
                         <td class="admin-table-td">
-                            <div class="text-sm font-medium text-gray-900 dark:text-white">#{{ $req->id }}</div>
+                            <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $req->id }}</div>
                             <div class="text-[10px] text-gray-400 dark:text-gray-500 uppercase">{{ $req->created_at->format('d M Y | H:i') }}</div>
                         </td>
                         <td class="admin-table-td">
@@ -93,17 +85,22 @@
                         </td>
                         <td class="admin-table-td text-center">
                             @if($req->status == 'pending')
-                                <span class="badge-status badge-pending">รอดำเนินการ</span>
+                                <span class="badge-status badge-pending"><i class="fa-solid fa-circle-exclamation mr-1.5 text-[8px]"></i> รอดำเนินการ</span>
                             @elseif($req->status == 'processing')
-                                <span class="badge-status badge-processing">กำลังดำเนินการ</span>
+                                <span class="badge-status badge-processing"><i class="fa-solid fa-clock mr-1.5 text-[8px]"></i> กำลังดำเนินการ</span>
                             @else
-                                <span class="badge-status badge-completed">เสร็จสิ้น</span>
+                                <span class="badge-status badge-completed"><i class="fa-solid fa-circle-check mr-1.5 text-[8px]"></i> เสร็จสิ้น</span>
                             @endif
                         </td>
                         <td class="admin-table-td text-center">
-                            <button onclick="openEditModal({{ json_encode($req->load('user')) }})" class="btn-reply">
-                                <i class="fa-solid fa-comment-dots mr-1.5"></i> ตอบกลับ
-                            </button>
+                            <div class="flex justify-center items-center space-x-2">
+                                <button onclick="openEditModal({{ json_encode($req->load('user')) }})" class="btn-reply">
+                                    <i class="fa-solid fa-comment-dots mr-1.5"></i> ตอบกลับ
+                                </button>
+                                <button onclick="openDeleteRequestModal({{ $req->id }})" class="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/30 px-3 py-1.5 rounded-lg transition-colors text-sm font-medium flex items-center" title="ลบ">
+                                    <i class="fa-regular fa-trash-can mr-1.5"></i> ลบ
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     @empty
@@ -126,7 +123,7 @@
 <div id="editModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] hidden items-center justify-center p-4">
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all border border-gray-200 dark:border-gray-700">
         <div class="bg-[#7e059c] text-white px-8 py-5 flex justify-between items-center">
-            <h3 class="text-xl font-bold">จัดการความต้องการ #<span id="modal_id"></span></h3>
+            <h3 class="text-xl font-bold">จัดการความต้องการ รหัส <span id="modal_id"></span></h3>
             <button onclick="closeModal()" class="text-white/80 hover:text-white transition-colors bg-white/10 p-2 rounded-full"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
         <form id="updateForm" method="POST" class="p-8">
@@ -139,11 +136,11 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-xs font-bold text-gray-400 uppercase mb-2 tracking-wider">สถานะการดำเนินงาน</label>
+                        <label class="block text-xs font-bold text-gray-400 uppercase mb-2 tracking-wider">ปรับเปลี่ยนสถานะ</label>
                         <select name="status" id="modal_status" class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-[#7e059c] outline-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white font-medium">
-                            <option value="pending">⏳ รอดำเนินการ</option>
-                            <option value="processing">⚙️ กำลังดำเนินการ</option>
-                            <option value="completed">✅ เสร็จสิ้น</option>
+                            <option value="pending">⏳ รอดำเนินการ (Pending)</option>
+                            <option value="processing">⚙️ กำลังดำเนินการ (In Progress)</option>
+                            <option value="completed">✅ เสร็จสิ้น (Completed)</option>
                         </select>
                     </div>
                 </div>
@@ -156,6 +153,23 @@
                 <button type="button" onclick="closeModal()" class="px-6 py-2.5 text-gray-500 font-bold text-sm">ยกเลิก</button>
                 <button type="submit" class="px-8 py-2.5 bg-[#7e059c] text-white rounded-xl hover:bg-[#6a0485] shadow-lg transition-all font-bold text-sm">อัปเดตข้อมูล</button>
             </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteRequestModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] hidden items-center justify-center p-4">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all border border-gray-200 dark:border-gray-700 p-6 text-center">
+        <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-triangle-exclamation text-3xl text-red-500"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">ยืนยันการลบรายการความต้องการ?</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-6 font-medium text-sm">รายการนี้จะถูกลบออกจากระบบอย่างถาวร<br>การกระทำนี้ไม่สามารถย้อนกลับได้</p>
+        
+        <form id="deleteRequestForm" method="POST" class="flex justify-center space-x-3">
+            @csrf
+            <button type="button" onclick="closeDeleteRequestModal()" class="w-full px-4 py-2 text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 rounded-lg font-medium transition-colors">ยกเลิก</button>
+            <button type="submit" class="w-full px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg font-medium transition-colors shadow-sm">ยืนยันลบ</button>
         </form>
     </div>
 </div>
@@ -176,6 +190,18 @@
     function closeModal() {
         document.getElementById('editModal').classList.add('hidden');
         document.getElementById('editModal').classList.remove('flex');
+    }
+
+    function openDeleteRequestModal(id) {
+        let form = document.getElementById('deleteRequestForm');
+        form.action = "{{ route('admin.requests.destroy', 'REPLACE_ID') }}".replace('REPLACE_ID', id);
+        document.getElementById('deleteRequestModal').classList.remove('hidden');
+        document.getElementById('deleteRequestModal').classList.add('flex');
+    }
+
+    function closeDeleteRequestModal() {
+        document.getElementById('deleteRequestModal').classList.add('hidden');
+        document.getElementById('deleteRequestModal').classList.remove('flex');
     }
 </script>
 @endsection

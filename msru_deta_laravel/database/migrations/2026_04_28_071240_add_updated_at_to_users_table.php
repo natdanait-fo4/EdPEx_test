@@ -17,8 +17,8 @@ return new class extends Migration
             }
         });
 
-        // Sync email from username if null
-        \Illuminate\Support\Facades\DB::statement('UPDATE users SET email = username WHERE email IS NULL');
+        // Sync email from name if null
+        \Illuminate\Support\Facades\DB::statement('UPDATE users SET email = name WHERE email IS NULL');
     }
 
     /**

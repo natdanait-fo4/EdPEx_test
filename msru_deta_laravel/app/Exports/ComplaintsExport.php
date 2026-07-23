@@ -38,7 +38,7 @@ class ComplaintsExport implements FromCollection, WithHeadings, WithTitle, WithM
         return [
             $complaint->id,
             $complaint->created_at->format('Y-m-d H:i:s'),
-            $complaint->user->name ?? 'ไม่ระบุตัวตน',
+            $complaint->user->username ?? 'ไม่ระบุตัวตน',
             $complaint->topic,
             $complaint->description,
             $complaint->status,

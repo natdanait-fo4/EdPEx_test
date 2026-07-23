@@ -14,7 +14,8 @@ use App\Http\Controllers\AdminProfileController;
 use App\Http\Controllers\AuthController;
 
 // Auth Routes
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
+Route::get('/login', [AuthController::class, 'showLoginForm']);
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
@@ -26,12 +27,16 @@ Route::get('/forgot-password', [App\Http\Controllers\ForgotPasswordController::c
 Route::post('/forgot-password/send-otp', [App\Http\Controllers\ForgotPasswordController::class, 'sendOtp'])->name('password.send_otp');
 Route::post('/forgot-password/reset', [App\Http\Controllers\ForgotPasswordController::class, 'resetPassword'])->name('password.reset.submit');
 
-Route::get('/', [HomeController::class, 'index'])->name('home.index');
-Route::get('/complaint', [ComplaintController::class, 'index'])->name('complaint.index');
-Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store')->middleware('throttle:5,1');
+Route::get('/home', [HomeController::class, 'index'])->name('home.index');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/complaint', [ComplaintController::class, 'index'])->name('complaint.index');
+    Route::post('/complaint', [ComplaintController::class, 'store'])->name('complaint.store')->middleware('throttle:5,1');
+    Route::get('/request', [RequestController::class, 'index'])->name('request.index');
+    Route::post('/request', [RequestController::class, 'store'])->name('request.store')->middleware('throttle:5,1');
+});
+
 Route::get('/assessment', [AssessmentController::class, 'index'])->name('assessment.index');
 Route::post('/assessment', [AssessmentController::class, 'store'])->name('assessment.store')->middleware('throttle:5,1');
-Route::get('/request', [RequestController::class, 'index'])->name('request.index');
 
 // QA Public Routes
 Route::get('/qa', [QAController::class, 'index'])->name('qa.index');
@@ -64,6 +69,16 @@ Route::name('admin.')->prefix('admin')->middleware(['auth', 'admin'])->group(fun
         Route::post('/store', [App\Http\Controllers\AdminBannerController::class, 'store'])->name('store');
         Route::post('/{id}/update', [App\Http\Controllers\AdminBannerController::class, 'update'])->name('update');
         Route::post('/{id}/destroy', [App\Http\Controllers\AdminBannerController::class, 'destroy'])->name('destroy');
+        Route::post('/reorder', [App\Http\Controllers\AdminBannerController::class, 'reorder'])->name('reorder');
+    });
+
+    // Admin PLO Routes
+    Route::prefix('plos')->name('plos.')->group(function () {
+        Route::get('/', [App\Http\Controllers\AdminPloController::class, 'index'])->name('index');
+        Route::post('/store', [App\Http\Controllers\AdminPloController::class, 'store'])->name('store');
+        Route::post('/{id}/update', [App\Http\Controllers\AdminPloController::class, 'update'])->name('update');
+        Route::post('/{id}/destroy', [App\Http\Controllers\AdminPloController::class, 'destroy'])->name('destroy');
+        Route::post('/reorder', [App\Http\Controllers\AdminPloController::class, 'reorder'])->name('reorder');
     });
 
     // Admin Assessment Routes
@@ -72,6 +87,7 @@ Route::name('admin.')->prefix('admin')->middleware(['auth', 'admin'])->group(fun
         Route::post('/question/store', [AdminAssessmentController::class, 'storeQuestion'])->name('question.store');
         Route::post('/question/{id}/update', [AdminAssessmentController::class, 'updateQuestion'])->name('question.update');
         Route::post('/question/{id}/destroy', [AdminAssessmentController::class, 'destroyQuestion'])->name('question.destroy');
+        Route::post('/category/update', [AdminAssessmentController::class, 'updateCategory'])->name('category.update');
         Route::get('/responses', [AdminAssessmentController::class, 'responses'])->name('responses');
         Route::post('/responses/{id}/destroy', [AdminAssessmentController::class, 'destroyResponse'])->name('responses.destroy');
         Route::get('/export', [AdminAssessmentController::class, 'exportExcel'])->name('export');
@@ -96,9 +112,7 @@ Route::name('admin.')->prefix('admin')->middleware(['auth', 'admin'])->group(fun
     Route::post('/profile/password', [AdminProfileController::class, 'updatePassword'])->name('profile.password.update');
 });
 
-// Update Request Store Route
-Route::post('/request', [RequestController::class, 'store'])->name('request.store')->middleware('throttle:5,1');
-
+// (Request store moved to auth group above)
 // Admin QA Routes
 Route::prefix('admin/qa')->name('admin.qa.')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/', [AdminQAController::class, 'index'])->name('index');

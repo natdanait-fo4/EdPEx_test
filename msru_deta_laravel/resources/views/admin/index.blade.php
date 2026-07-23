@@ -1,12 +1,31 @@
 @extends('layouts.admin')
 
 @section('title', 'Admin Dashboard | NSRU-MS')
-@section('header_title', 'ภาพรวมระบบ (Dashboard)')
+@section('header_title', 'หน้าแรก')
+
+@section('admin_skeleton_content')
+    <!-- Header Title Skeleton -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+        <div style="width: 200px; height: 28px; border-radius: 4px;" class="skeleton-shimmer"></div>
+        <div style="width: 120px; height: 40px; border-radius: 8px;" class="skeleton-shimmer"></div>
+    </div>
+
+    <!-- Stats Cards Skeleton -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; width: 100%; flex-shrink: 0;">
+        <div style="height: 96px; border-radius: 12px; padding: 20px; box-sizing: border-box;" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 skeleton-shimmer"></div>
+        <div style="height: 96px; border-radius: 12px; padding: 20px; box-sizing: border-box;" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 skeleton-shimmer"></div>
+        <div style="height: 96px; border-radius: 12px; padding: 20px; box-sizing: border-box;" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 skeleton-shimmer"></div>
+        <div style="height: 96px; border-radius: 12px; padding: 20px; box-sizing: border-box;" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 skeleton-shimmer"></div>
+    </div>
+
+    <!-- Table Content Skeleton -->
+    <div style="flex: 1; min-height: 350px; border-radius: 12px; padding: 24px; box-sizing: border-box;" class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 skeleton-shimmer"></div>
+@endsection
 
 @section('content')
 <div class="dash-welcome-card">
     <div class="dash-welcome-icon">
-        <i class="fa-solid fa-gauge-high text-4xl text-[#7e059c] dark:text-purple-400"></i>
+        <i class="fa-solid fa-house text-4xl text-[#7e059c] dark:text-purple-400"></i>
     </div>
     <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">ยินดีต้อนรับสู่ระบบจัดการ NSRU-MS</h2>
     <p class="text-gray-500 dark:text-gray-400 mb-8">คุณอยู่ที่หน้าแรกของส่วนผู้ดูแลระบบ (Admin) สามารถใช้แถบเมนูด้านซ้ายเพื่อไปยังส่วนปฏิบัติการต่างๆ ได้ทันที</p>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>เข้าสู่ระบบ (Login) | NSRU-MS DETA SHIP</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <!-- Assets -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Prompt Font & Font Awesome -->
@@ -55,10 +56,7 @@
 
             <!-- Password Input -->
             <div class="mb-6">
-                <div class="flex justify-between mb-2">
-                    <label for="password" class="block text-[15px] font-medium text-gray-700">รหัสผ่าน</label>
-                    <a href="{{ route('password.forgot') }}" class="text-[13px] text-[#7e059c] hover:underline font-medium">ลืมรหัสผ่าน?</a>
-                </div>
+                <label for="password" class="block text-[15px] font-medium text-gray-700 mb-2">รหัสผ่าน</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                         <i class="fa-solid fa-lock text-gray-400"></i>
@@ -70,6 +68,10 @@
                         class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-[#7e059c] transition-colors">
                         <i id="eye_icon" class="fa-solid fa-eye"></i>
                     </button>
+                </div>
+                <!-- ลืมรหัสผ่าน — ย้ายมาอยู่ใต้ input -->
+                <div class="flex justify-end mt-2">
+                    <a href="{{ route('password.forgot') }}" class="text-[13px] text-[#7e059c] hover:underline font-medium">ลืมรหัสผ่าน?</a>
                 </div>
             </div>
 
